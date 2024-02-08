@@ -21,32 +21,48 @@ class ViewController: UIViewController {
         return slider
     }()
     
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .leading
+        stackView.spacing = 100
+        
+        return stackView
+    }()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        
     }
     
     // MARK: - Private methods
     
     private func setupUI() {
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(slider)
-        cubeView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cubeView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(cubeView)
+        stackView.addArrangedSubview(slider)
+        view.addSubview(stackView)
+        
+        
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 40, leading: 50, bottom: 10, trailing: 50)
+        
         
         cubeView.backgroundColor = .systemBlue
+        let width: CGFloat = UIScreen.main.bounds.width - 100
         
         NSLayoutConstraint.activate([
-            cubeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            cubeView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
             cubeView.widthAnchor.constraint(equalToConstant: 100),
             cubeView.heightAnchor.constraint(equalToConstant: 100),
             
-            slider.topAnchor.constraint(equalTo: cubeView.bottomAnchor, constant: 40),
-            slider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            slider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            slider.heightAnchor.constraint(equalToConstant: 10)
+            slider.heightAnchor.constraint(equalToConstant: 10),
+            slider.widthAnchor.constraint(equalToConstant: width)
         ])
         
         slider.addTarget(self, action: #selector(sliderAction), for: .valueChanged)
@@ -104,14 +120,3 @@ extension FloatingPoint {
         return x / y + output.lowerBound
     }
 }
-//
-//extension BinaryInteger {
-//    func converting(from input: ClosedRange<Self>, to output: ClosedRange<Self>) -> Self {
-//        let x = (output.upperBound - output.lowerBound) * (self - input.lowerBound)
-//        let y = (input.upperBound - input.lowerBound)
-//        return x / y + output.lowerBound
-//    }
-//}
-//
-//let integer = 380
-//let result = integer.converting(from: 10...750, to: 100...350) // 225
