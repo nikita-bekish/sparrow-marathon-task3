@@ -69,39 +69,30 @@ class ViewController: UIViewController {
             case .began:
                 print("nik began")
             case .moved:
-                // cubeViewCenterXConstraint.constant = CGFloat(sender.value * Float(width) / sender.maximumValue)
                 t = t.rotated(by: CGFloat(slider.value * (.pi / 2) / slider.maximumValue))
                 
                 
-                // TODO: UNCOMMENT
                 let result = slider.value.converting(from: 0...1, to: 1...1.5)
                 t = t.scaledBy(x: CGFloat(result), y: CGFloat(result))
                 
                 let translatedResult = slider.value.converting(from: 0...1, to: 100...Float(width))
-                let centerXOffset = slider.value.converting(from: 0...1, to: 100...150)//  * result
+                let centerXOffset = slider.value.converting(from: 0...1, to: 0...37.5)
+                                
                 
-                print("nik moved translatedResult", translatedResult, "scaled by", result)
-                
-                
-                cubeView.layer.position.x = CGFloat(translatedResult)
-                // cubeViewCenterXConstraint.constant = CGFloat(translatedResult) - CGFloat(centerXOffset)
-                // t = t.translatedBy(x: CGFloat(translatedResult), y: 1)
+                cubeView.layer.position.x = CGFloat(translatedResult) - CGFloat(centerXOffset)
             case .ended:
-                let translatedResultt = slider.value.converting(from: 0...1, to: 50...Float(width))
-
                 sender.setValue(slider.maximumValue, animated: true)
                 t = t.rotated(by: CGFloat(slider.value * (.pi / 2) / slider.maximumValue))
                 
-                // TODO: UNCOMMENT
                 let result = slider.value.converting(from: 0...1, to: 1...1.5)
                 t = t.scaledBy(x: CGFloat(result), y: CGFloat(result))
                 
                 let translatedResult = slider.value.converting(from: 0...1, to: 100...Float(width))
-                let centerXOffset = slider.value.converting(from: 0...1, to: (-50)...50)
+                let centerXOffset = slider.value.converting(from: 0...1, to: 0...37.5)
 
 
                 UIView.animate(withDuration: 0.3) {
-                    self.cubeView.layer.position.x = CGFloat(translatedResult) // - CGFloat(centerXOffset)
+                    self.cubeView.layer.position.x = CGFloat(translatedResult) - CGFloat(centerXOffset)
                 }
 
 
