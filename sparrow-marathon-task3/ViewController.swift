@@ -76,10 +76,9 @@ class ViewController: UIViewController {
                     sender.setValue(slider.maximumValue, animated: true)
                 }
                 
-                var scaledResult = slider.value.converting(from: 0...1, to: 1...1.5)
+                let scaledResult = slider.value.converting(from: 0...1, to: 1...1.5)
                 let translatedResult = slider.value.converting(from: 0...1, to: 100...Float(width))
                 let centerXOffset = slider.value.converting(from: 0...1, to: 0...37.5)
-                
                 
                 t = t.rotated(by: CGFloat(slider.value * (.pi / 2) / slider.maximumValue))
                 t = t.scaledBy(x: CGFloat(scaledResult), y: CGFloat(scaledResult))
