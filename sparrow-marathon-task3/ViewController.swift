@@ -12,7 +12,6 @@ class ViewController: UIViewController {
     // MARK: - Private properties
     
     private let cubeView = UIView()
-    private lazy var cubeViewCenterXConstraint = cubeView.centerXAnchor.constraint(equalTo: slider.leadingAnchor)
     private let slider: UISlider = {
         let slider = UISlider()
         slider.minimumValue = 0
@@ -31,6 +30,7 @@ class ViewController: UIViewController {
         return stackView
     }()
     
+    private let width: CGFloat = UIScreen.main.bounds.width - 100
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,13 +46,10 @@ class ViewController: UIViewController {
         stackView.addArrangedSubview(slider)
         view.addSubview(stackView)
         
-        
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 40, leading: 50, bottom: 10, trailing: 50)
-        
-        
+                
         cubeView.backgroundColor = .systemBlue
-        let width: CGFloat = UIScreen.main.bounds.width - 100
         
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -68,40 +65,33 @@ class ViewController: UIViewController {
         slider.addTarget(self, action: #selector(sliderAction), for: .valueChanged)
     }
     
-  
-    
     @objc private func sliderAction(sender: UISlider, forEvent event: UIEvent) {
         var t = CGAffineTransform.identity
-        let width: CGFloat = UIScreen.main.bounds.width - 100
 
         if let touchEvent = event.allTouches?.first {
             switch touchEvent.phase {
-            case .moved:
-                t = t.rotated(by: CGFloat(slider.value * (.pi / 2) / slider.maximumValue))
+            case .moved, .began, .ended:
                 
-                let result = slider.value.converting(from: 0...1, to: 1...1.5)
-                t = t.scaledBy(x: CGFloat(result), y: CGFloat(result))
-                
-                let translatedResult = slider.value.converting(from: 0...1, to: 100...Float(width))
-                let centerXOffset = slider.value.converting(from: 0...1, to: 0...37.5)
-                                
-                cubeView.layer.position.x = CGFloat(translatedResult) - CGFloat(centerXOffset)
-            case .ended:
-                sender.setValue(slider.maximumValue, animated: true)
-                t = t.rotated(by: CGFloat(slider.value * (.pi / 2) / slider.maximumValue))
-                
-                let result = slider.value.converting(from: 0...1, to: 1...1.5)
-                t = t.scaledBy(x: CGFloat(result), y: CGFloat(result))
-                
-                let translatedResult = slider.value.converting(from: 0...1, to: 100...Float(width))
-                let centerXOffset = slider.value.converting(from: 0...1, to: 0...37.5)
-
-                UIView.animate(withDuration: 0.3) {
-                    self.cubeView.layer.position.x = CGFloat(translatedResult) - CGFloat(centerXOffset)
+                if touchEvent.phase == .ended {
+                    sender.setValue(slider.maximumValue, animated: true)
                 }
-
-            case .began:
-                break
+                
+                var scaledResult = slider.value.converting(from: 0...1, to: 1...1.5)
+                let translatedResult = slider.value.converting(from: 0...1, to: 100...Float(width))
+                let centerXOffset = slider.value.converting(from: 0...1, to: 0...37.5)
+                
+                
+                t = t.rotated(by: CGFloat(slider.value * (.pi / 2) / slider.maximumValue))
+                t = t.scaledBy(x: CGFloat(scaledResult), y: CGFloat(scaledResult))
+                
+                if touchEvent.phase == .ended {
+                    UIView.animate(withDuration: 0.3) {
+                        self.cubeView.layer.position.x = CGFloat(translatedResult) - CGFloat(centerXOffset)
+                    }
+                } else {
+                    cubeView.layer.position.x = CGFloat(translatedResult) - CGFloat(centerXOffset)
+                }
+                
             default:
                 break
             }
